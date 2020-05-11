@@ -1,7 +1,9 @@
-var mongoose = require("mongoose");
-var Schema = mongoose.Schema;
+const mongoose = require("mongoose");
+const { findUserId } = require("./helpers");
 
-var todoSchema = new Schema({
+const Schema = mongoose.Schema;
+
+const todoSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: "User" },
   title: {
     type: String,
@@ -19,5 +21,5 @@ var todoSchema = new Schema({
   updatedAt: { type: Date, default: Date.now() },
 });
 
-var Todo = mongoose.model("Todo", todoSchema);
+const Todo = mongoose.model("Todo", todoSchema);
 module.exports = Todo;

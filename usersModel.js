@@ -1,8 +1,9 @@
-var mongoose = require("mongoose");
-var Schema = mongoose.Schema;
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 const { hash } = require("./hashing");
+const customError = require("./customError");
 
-var userSchema = new Schema({
+const userSchema = new Schema({
   username: { type: String, required: true, unique: true },
   password: {
     type: String,
@@ -16,10 +17,18 @@ var userSchema = new Schema({
     min: [13, "user can't be less than 13 years old"],
     optional: true,
   },
-  todos: [{ type: mongoose.Schema.Types.ObjectId, ref: "Todo" }],
-  kedaho: [{ type: mongoose.Schema.Types.ObjectId, ref: "Todo" }],
+  todos: [{ type: Schema.Types.ObjectId, ref: "Todo" }],
 });
-
+//get todos by userId
+userSchema.statics.findTodosByUserId = async function (userId) {
+  return this.findOne({ _id: userId }, "todos").populate("todos");
+};
+userSchema.statics.findTodosByUsername = async function (username) {
+  return this.findOne({ username: username }, "todos").populate("todos");
+};
+userSchema.statics.checkIfUserExists = async function (username) {
+  return this.findOne({ username: username }, "todos").populate("todos");
+};
 userSchema.pre("save", async function (next) {
   const userdoc = this;
 
@@ -28,6 +37,6 @@ userSchema.pre("save", async function (next) {
   userdoc.password = hashed;
   next();
 });
-var User = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
 
 module.exports = User;

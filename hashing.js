@@ -1,4 +1,4 @@
-var bcrypt = require("bcryptjs");
+const bcrypt = require("bcryptjs");
 const SALT_ROUNDS = 10;
 const hash = async (text) => {
   return bcrypt.hash(text, SALT_ROUNDS);
